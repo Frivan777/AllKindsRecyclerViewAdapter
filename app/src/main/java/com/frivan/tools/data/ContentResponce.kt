@@ -1,4 +1,4 @@
-package com.frivan.adapter.data
+package com.frivan.tools.data
 
 data class ContentResponce(
     val list: List<String>,

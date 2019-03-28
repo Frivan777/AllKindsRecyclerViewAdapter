@@ -1,7 +1,7 @@
-package com.frivan.adapter.adapter.generic
+package com.frivan.tools.adapter.generic
 
 import android.view.View
-import com.frivan.adapter.adapter.base.BaseItemViewHolder
+import com.frivan.tools.adapter.base.BaseItemViewHolder
 import kotlinx.android.synthetic.main.item_content.*
 
 class AnimalViewHolder(view: View) : BaseItemViewHolder<AnimalData>(view) {

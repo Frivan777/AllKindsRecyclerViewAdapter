@@ -1,4 +1,4 @@
-package com.frivan.adapter
+package com.frivan.tools
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4

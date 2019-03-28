@@ -1,4 +1,4 @@
-package com.frivan.adapter
+package com.frivan.tools
 
 import android.os.Bundle
 import android.os.Handler
@@ -11,9 +11,9 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import androidx.paging.PositionalDataSource
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.frivan.adapter.adapter.allsorts.ContentData
-import com.frivan.adapter.adapter.base.ItemData
-import com.frivan.adapter.data.FakeContentStorage
+import com.frivan.tools.adapter.allsorts.ContentData
+import com.frivan.tools.adapter.base.ItemData
+import com.frivan.tools.data.FakeContentStorage
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import java.util.concurrent.Executor
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
         //region Paged AllKindsAdapter
 
-        val addapter = com.frivan.adapter.adapter.allsorts.paged.AllKindsAdapter()
+        val addapter = com.frivan.tools.adapter.allsorts.paged.AllKindsAdapter()
 
         val config = PagedList.Config.Builder()
             .setEnablePlaceholders(true)
@@ -173,6 +173,7 @@ class MainActivity : AppCompatActivity() {
 
         override fun execute(command: Runnable?) {
             handler.post(command)
+
         }
     }
 

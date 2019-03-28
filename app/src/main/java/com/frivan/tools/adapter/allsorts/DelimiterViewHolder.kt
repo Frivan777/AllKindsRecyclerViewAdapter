@@ -1,8 +1,8 @@
-package com.frivan.adapter.adapter.allsorts
+package com.frivan.tools.adapter.allsorts
 
 import android.view.View
-import com.frivan.adapter.adapter.base.BaseItemViewHolder
-import com.frivan.adapter.adapter.base.ItemData
+import com.frivan.tools.adapter.base.BaseItemViewHolder
+import com.frivan.tools.adapter.base.ItemData
 
 class DelimiterViewHolder(view: View) : BaseItemViewHolder<ItemData>(view) {
 

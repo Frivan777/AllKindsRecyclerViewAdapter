@@ -1,7 +1,7 @@
-package com.frivan.adapter.adapter.generic
+package com.frivan.tools.adapter.generic
 
-import com.frivan.adapter.R
-import com.frivan.adapter.adapter.base.ItemData
+import com.frivan.tools.R
+import com.frivan.tools.adapter.base.ItemData
 
 data class AnimalData(
     val kind: Int,

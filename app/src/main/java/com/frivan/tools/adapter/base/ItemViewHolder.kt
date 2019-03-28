@@ -1,4 +1,4 @@
-package com.frivan.adapter.adapter.base
+package com.frivan.tools.adapter.base
 
 interface ItemViewHolder<T : ItemData> {
 

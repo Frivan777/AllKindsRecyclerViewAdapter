@@ -1,4 +1,4 @@
-package com.frivan.adapter.adapter.base
+package com.frivan.tools.adapter.base
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

@@ -1,4 +1,4 @@
-package com.frivan.adapter.data
+package com.frivan.tools.data
 
 import android.os.Handler
 import android.os.Looper

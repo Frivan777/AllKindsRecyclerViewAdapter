@@ -1,14 +1,14 @@
-package com.frivan.adapter.adapter.allsorts.paged
+package com.frivan.tools.adapter.allsorts.paged
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import com.frivan.adapter.R
-import com.frivan.adapter.adapter.allsorts.ContentViewHolder
-import com.frivan.adapter.adapter.allsorts.DelimiterViewHolder
-import com.frivan.adapter.adapter.base.BaseItemViewHolder
-import com.frivan.adapter.adapter.base.BasePagedListItemAdapter
-import com.frivan.adapter.adapter.base.ItemData
+import com.frivan.tools.R
+import com.frivan.tools.adapter.allsorts.ContentViewHolder
+import com.frivan.tools.adapter.allsorts.DelimiterViewHolder
+import com.frivan.tools.adapter.base.BaseItemViewHolder
+import com.frivan.tools.adapter.base.BasePagedListItemAdapter
+import com.frivan.tools.adapter.base.ItemData
 
 
 class AllKindsAdapter : BasePagedListItemAdapter<ItemData>(AllKindsDiffCallback()) {

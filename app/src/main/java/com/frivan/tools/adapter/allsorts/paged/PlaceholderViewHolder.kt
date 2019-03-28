@@ -1,8 +1,8 @@
-package com.frivan.adapter.adapter.allsorts.paged
+package com.frivan.tools.adapter.allsorts.paged
 
 import android.view.View
-import com.frivan.adapter.adapter.base.BaseItemViewHolder
-import com.frivan.adapter.adapter.base.ItemData
+import com.frivan.tools.adapter.base.BaseItemViewHolder
+import com.frivan.tools.adapter.base.ItemData
 
 class PlaceholderViewHolder(view: View) : BaseItemViewHolder<ItemData>(view) {
 

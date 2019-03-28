@@ -1,4 +1,4 @@
-package com.frivan.adapter
+package com.frivan.tools
 
 import org.junit.Test
 
