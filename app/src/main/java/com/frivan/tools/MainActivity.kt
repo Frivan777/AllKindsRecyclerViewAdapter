@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.util.TypedValue
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.paging.DataSource
@@ -11,6 +12,7 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import androidx.paging.PositionalDataSource
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.frivan.tools.adapter.allsorts.ContentData
 import com.frivan.tools.adapter.base.ItemData
 import com.frivan.tools.data.FakeContentStorage
@@ -22,6 +24,10 @@ import java.util.concurrent.Executors
 private const val PAGE_SIZE = 10
 
 private const val EXTRA_POSITION = "extraPosition"
+
+private const val REFRESH_DELAY = 2000L
+
+private const val UP_SCROLL_DIRECTION = -1
 
 class MainActivity : AppCompatActivity() {
 
@@ -62,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 
         val pagedListData = LivePagedListBuilder<Int, ItemData>(itemDataSourceFactory, config)
             .setFetchExecutor(Executors.newSingleThreadExecutor())
-            .setBoundaryCallback(object: PagedList.BoundaryCallback<ItemData?>() {
+            .setBoundaryCallback(object : PagedList.BoundaryCallback<ItemData?>() {
                 override fun onZeroItemsLoaded() {
                     super.onZeroItemsLoaded()
                 }
@@ -82,9 +88,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }.build()
 
-        pagedListData.observe(this, Observer {  })
+        pagedListData.observe(this, Observer { })
 
-        val pagedList = PagedList.Builder(ItemDataSource(), config)
+        val itemDataSource = ItemDataSource({
+            this.endUpdate()
+        })
+        val pagedList = PagedList.Builder(itemDataSource, config)
             .setFetchExecutor(Executors.newSingleThreadExecutor())
             .setNotifyExecutor(MainThreadExecutor())
             .also {
@@ -163,6 +172,36 @@ class MainActivity : AppCompatActivity() {
 
         //endregion Simple AllKindsAdapter
 
+        //region view settings
+
+        val typedValue = TypedValue()
+        this.theme.resolveAttribute(androidx.appcompat.R.attr.actionBarSize, typedValue, true)
+        val offset = TypedValue.complexToDimensionPixelSize(
+            typedValue.data,
+            resources.displayMetrics
+        )
+        this.swipeRefresh.isEnabled = false
+        this.swipeRefresh.setProgressViewOffset(false, 0, offset)
+        this.swipeRefresh.setOnRefreshListener {
+            Handler().postDelayed({
+                this.endUpdate()
+            }, REFRESH_DELAY)
+        }
+
+        this.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                if (!recyclerView.canScrollVertically(UP_SCROLL_DIRECTION)) {
+                    swipeRefresh.isEnabled = true
+                } else if (swipeRefresh.isEnabled && !swipeRefresh.isRefreshing) {
+                    swipeRefresh.isEnabled = false
+                }
+            }
+        })
+
+        //endregion view settings
     }
 
     //region for paging
@@ -172,11 +211,13 @@ class MainActivity : AppCompatActivity() {
 
         override fun execute(command: Runnable?) {
             handler.post(command)
-
         }
     }
 
-    private class ItemDataSource(private val contentStorage: FakeContentStorage = FakeContentStorage()) :
+    private class ItemDataSource(
+        private val loadCallback: (() -> Unit)? = null,
+        private val contentStorage: FakeContentStorage = FakeContentStorage()
+    ) :
         PositionalDataSource<ItemData>() {
 
         override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<ItemData>) {
@@ -189,6 +230,8 @@ class MainActivity : AppCompatActivity() {
 
         override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<ItemData>) {
             contentStorage.getData(params.requestedStartPosition, params.requestedLoadSize) { result ->
+                loadCallback?.invoke()
+
                 val position = if (result.list.isEmpty()) {
                     0
                 } else {
@@ -219,5 +262,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     //endregion for paging
+
+    private fun endUpdate() {
+        this.swipeRefresh.apply {
+            if (isRefreshing) {
+                isRefreshing = !isRefreshing
+            }
+        }
+    }
 
 }
