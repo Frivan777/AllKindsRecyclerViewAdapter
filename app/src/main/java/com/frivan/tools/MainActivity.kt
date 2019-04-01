@@ -310,9 +310,7 @@ class MainActivity : AppCompatActivity() {
                     getDecorationView(parent)?.let { decorationView ->
                         decorationView.y = child.bottom.toFloat()
                         parent.drawChild(c, decorationView, System.currentTimeMillis())
-
                         ViewCompat.postInvalidateOnAnimation(parent)
-                        decorationView.progressBar?.invalidate()
                     }
                 }
             }
