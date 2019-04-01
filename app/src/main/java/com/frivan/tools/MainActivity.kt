@@ -1,11 +1,17 @@
 package com.frivan.tools
 
+import android.graphics.Canvas
+import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.util.TypedValue
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
@@ -18,6 +24,7 @@ import com.frivan.tools.adapter.base.ItemData
 import com.frivan.tools.data.FakeContentStorage
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.item_loading.view.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -58,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         val addapter = com.frivan.tools.adapter.allsorts.paged.AllKindsAdapter()
 
         val config = PagedList.Config.Builder()
-            .setEnablePlaceholders(true)
+            .setEnablePlaceholders(false)
             .setPageSize(PAGE_SIZE)
             .setInitialLoadSizeHint(PAGE_SIZE * 2) //default = PageSize * 3
             .setPrefetchDistance(PAGE_SIZE) //default = PageSize
@@ -90,11 +97,17 @@ class MainActivity : AppCompatActivity() {
 
         pagedListData.observe(this, Observer { })
 
+        val loadingItemDecoration = LoadingItemDecoration()
+
         val itemDataSource = ItemDataSource({
+            recyclerView.addItemDecoration(loadingItemDecoration)
+        }, {
+            recyclerView.removeItemDecoration(loadingItemDecoration)
             this.endUpdate()
         })
+
         val pagedList = PagedList.Builder(itemDataSource, config)
-            .setFetchExecutor(Executors.newSingleThreadExecutor())
+            .setFetchExecutor(MainThreadExecutor())
             .setNotifyExecutor(MainThreadExecutor())
             .also {
                 savedInstanceState?.getInt(EXTRA_POSITION)?.let { position ->
@@ -172,7 +185,7 @@ class MainActivity : AppCompatActivity() {
 
         //endregion Simple AllKindsAdapter
 
-        //region view settings
+        //region decorationView settings
 
         val typedValue = TypedValue()
         this.theme.resolveAttribute(androidx.appcompat.R.attr.actionBarSize, typedValue, true)
@@ -201,7 +214,15 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        //endregion view settings
+        //endregion decorationView settings
+    }
+
+    private fun endUpdate() {
+        this.swipeRefresh.apply {
+            if (isRefreshing) {
+                isRefreshing = !isRefreshing
+            }
+        }
     }
 
     //region for paging
@@ -215,13 +236,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private class ItemDataSource(
-        private val loadCallback: (() -> Unit)? = null,
+        private val loadingCallback: (() -> Unit)? = null,
+        private val endLoadingCallback: (() -> Unit)? = null,
         private val contentStorage: FakeContentStorage = FakeContentStorage()
     ) :
         PositionalDataSource<ItemData>() {
 
         override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<ItemData>) {
+            loadingCallback?.invoke()
+
             contentStorage.getData(params.startPosition, params.loadSize) { result ->
+                endLoadingCallback?.invoke()
+
                 callback.onResult(result.list.map {
                     ContentData(it)
                 })
@@ -230,8 +256,6 @@ class MainActivity : AppCompatActivity() {
 
         override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<ItemData>) {
             contentStorage.getData(params.requestedStartPosition, params.requestedLoadSize) { result ->
-                loadCallback?.invoke()
-
                 val position = if (result.list.isEmpty()) {
                     0
                 } else {
@@ -261,14 +285,63 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    //endregion for paging
+    private class LoadingItemDecoration : RecyclerView.ItemDecoration() {
 
-    private fun endUpdate() {
-        this.swipeRefresh.apply {
-            if (isRefreshing) {
-                isRefreshing = !isRefreshing
+        var decorationView: View? = null
+
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            super.getItemOffsets(outRect, view, parent, state)
+
+            val position = parent.getChildAdapterPosition(view)
+
+            if (position == parent.adapter?.itemCount?.minus(1)) {
+                outRect.bottom = getDecorationView(parent)?.measuredHeight ?: outRect.bottom
+            }
+        }
+
+        override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+            super.onDraw(c, parent, state)
+
+            for (i in 0..parent.childCount) {
+                val child = parent.getChildAt(i)
+                val position = parent.getChildAdapterPosition(child)
+
+                if (position == parent.adapter?.itemCount?.minus(1)) {
+                    getDecorationView(parent)?.let { decorationView ->
+                        decorationView.y = child.bottom.toFloat()
+                        parent.drawChild(c, decorationView, System.currentTimeMillis())
+
+                        ViewCompat.postInvalidateOnAnimation(parent)
+                        decorationView.progressBar?.invalidate()
+                    }
+                }
+            }
+        }
+
+        fun getDecorationView(parent: ViewGroup): View? {
+            return if (decorationView == null) {
+                decorationView = LayoutInflater.from(parent.context).inflate(R.layout.item_loading, parent, false)
+
+                val widthSpec = View.MeasureSpec.makeMeasureSpec(
+                    parent.width,
+                    View.MeasureSpec.EXACTLY
+                )
+                val heightSpec = View.MeasureSpec.makeMeasureSpec(
+                    parent.height,
+                    View.MeasureSpec.UNSPECIFIED
+                )
+
+                decorationView?.measure(widthSpec, heightSpec)
+
+                decorationView?.layout(0, 0, decorationView?.measuredWidth ?: 0, (decorationView?.measuredHeight ?: 0))
+
+                decorationView
+            } else {
+                decorationView
             }
         }
     }
+
+    //endregion for paging
 
 }

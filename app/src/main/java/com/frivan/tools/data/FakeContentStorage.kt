@@ -3,7 +3,7 @@ package com.frivan.tools.data
 import android.os.Handler
 import android.os.Looper
 
-private const val DELAY = 1000L
+private const val DELAY = 5000L
 
 private const val LIST_SIZE = 100
 
@@ -19,6 +19,8 @@ class FakeContentStorage {
         handler.postDelayed({
             if (start >= data.lastIndex) {
                 callback.invoke(ContentResponce(emptyList(), 0, data.size))
+
+                return@postDelayed
             }
 
             val toIndex = start + size
