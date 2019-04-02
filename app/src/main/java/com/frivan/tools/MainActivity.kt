@@ -1,30 +1,22 @@
 package com.frivan.tools
 
-import android.graphics.Canvas
-import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
-import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import androidx.paging.PositionalDataSource
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.frivan.tools.adapter.allsorts.ContentData
 import com.frivan.tools.adapter.base.ItemData
-import com.frivan.tools.data.FakeContentStorage
+import com.frivan.tools.data.item.ItemDataSource
+import com.frivan.tools.data.item.ItemDataSourceFactory
+import com.frivan.tools.decoration.LoadingItemDecoration
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import kotlinx.android.synthetic.main.item_loading.view.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -42,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        fab.setOnClickListener { view ->
+        fab.setOnClickListener {
             this.initView(savedInstanceState)
         }
 
@@ -62,7 +54,7 @@ class MainActivity : AppCompatActivity() {
 
         //region Paged AllKindsAdapter
 
-        val addapter = com.frivan.tools.adapter.allsorts.paged.AllKindsAdapter()
+        val adapter = com.frivan.tools.adapter.allsorts.paged.AllKindsAdapter()
 
         val config = PagedList.Config.Builder()
             .setEnablePlaceholders(false)
@@ -100,9 +92,9 @@ class MainActivity : AppCompatActivity() {
         val loadingItemDecoration = LoadingItemDecoration()
 
         val itemDataSource = ItemDataSource({
-            recyclerView.addItemDecoration(loadingItemDecoration)
+            this.recyclerView.addItemDecoration(loadingItemDecoration)
         }, {
-            recyclerView.removeItemDecoration(loadingItemDecoration)
+            this.recyclerView.removeItemDecoration(loadingItemDecoration)
             this.endUpdate()
         })
 
@@ -117,9 +109,9 @@ class MainActivity : AppCompatActivity() {
             }
             .build()
 
-        addapter.submitList(pagedList)
+        adapter.submitList(pagedList)
 
-        this.recyclerView.adapter = addapter
+        this.recyclerView.adapter = adapter
 
         //endregion Paged AllKindsAdapter
 
@@ -185,7 +177,7 @@ class MainActivity : AppCompatActivity() {
 
         //endregion Simple AllKindsAdapter
 
-        //region decorationView settings
+        //region View settings
 
         val typedValue = TypedValue()
         this.theme.resolveAttribute(androidx.appcompat.R.attr.actionBarSize, typedValue, true)
@@ -207,14 +199,15 @@ class MainActivity : AppCompatActivity() {
                 super.onScrolled(recyclerView, dx, dy)
 
                 if (!recyclerView.canScrollVertically(UP_SCROLL_DIRECTION)) {
-                    swipeRefresh.isEnabled = true
+                    this@MainActivity.swipeRefresh.isEnabled = true
                 } else if (swipeRefresh.isEnabled && !swipeRefresh.isRefreshing) {
-                    swipeRefresh.isEnabled = false
+                    this@MainActivity.swipeRefresh.isEnabled = false
                 }
             }
+
         })
 
-        //endregion decorationView settings
+        //endregion View settings
     }
 
     private fun endUpdate() {
@@ -225,121 +218,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //region for paging
-
     private class MainThreadExecutor : Executor {
         private val handler = Handler(Looper.getMainLooper())
 
         override fun execute(command: Runnable?) {
             handler.post(command)
         }
-    }
-
-    private class ItemDataSource(
-        private val loadingCallback: (() -> Unit)? = null,
-        private val endLoadingCallback: (() -> Unit)? = null,
-        private val contentStorage: FakeContentStorage = FakeContentStorage()
-    ) :
-        PositionalDataSource<ItemData>() {
-
-        override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<ItemData>) {
-            loadingCallback?.invoke()
-
-            contentStorage.getData(params.startPosition, params.loadSize) { result ->
-                endLoadingCallback?.invoke()
-
-                callback.onResult(result.list.map {
-                    ContentData(it)
-                })
-            }
-        }
-
-        override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<ItemData>) {
-            contentStorage.getData(params.requestedStartPosition, params.requestedLoadSize) { result ->
-                val position = if (result.list.isEmpty()) {
-                    0
-                } else {
-                    params.requestedStartPosition
-                }
-
-                val list = result.list.map {
-                    ContentData(it)
-                }
-
-                if (params.placeholdersEnabled) {
-                    callback.onResult(list, position, result.count)
-                } else {
-                    callback.onResult(list, position)
-                }
-
-                Log.d(this.javaClass.name, "loadInitial=${params.requestedStartPosition}")
-            }
-        }
-    }
-
-    private class ItemDataSourceFactory : DataSource.Factory<Int, ItemData>() {
-
-        override fun create(): DataSource<Int, ItemData> {
-            return ItemDataSource()
-        }
 
     }
-
-    private class LoadingItemDecoration : RecyclerView.ItemDecoration() {
-
-        var decorationView: View? = null
-
-        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-            super.getItemOffsets(outRect, view, parent, state)
-
-            val position = parent.getChildAdapterPosition(view)
-
-            if (position == parent.adapter?.itemCount?.minus(1)) {
-                outRect.bottom = getDecorationView(parent)?.measuredHeight ?: outRect.bottom
-            }
-        }
-
-        override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-            super.onDraw(c, parent, state)
-
-            for (i in 0..parent.childCount) {
-                val child = parent.getChildAt(i)
-                val position = parent.getChildAdapterPosition(child)
-
-                if (position == parent.adapter?.itemCount?.minus(1)) {
-                    getDecorationView(parent)?.let { decorationView ->
-                        decorationView.y = child.bottom.toFloat()
-                        parent.drawChild(c, decorationView, System.currentTimeMillis())
-                        ViewCompat.postInvalidateOnAnimation(parent)
-                    }
-                }
-            }
-        }
-
-        fun getDecorationView(parent: ViewGroup): View? {
-            return if (decorationView == null) {
-                decorationView = LayoutInflater.from(parent.context).inflate(R.layout.item_loading, parent, false)
-
-                val widthSpec = View.MeasureSpec.makeMeasureSpec(
-                    parent.width,
-                    View.MeasureSpec.EXACTLY
-                )
-                val heightSpec = View.MeasureSpec.makeMeasureSpec(
-                    parent.height,
-                    View.MeasureSpec.UNSPECIFIED
-                )
-
-                decorationView?.measure(widthSpec, heightSpec)
-
-                decorationView?.layout(0, 0, decorationView?.measuredWidth ?: 0, (decorationView?.measuredHeight ?: 0))
-
-                decorationView
-            } else {
-                decorationView
-            }
-        }
-    }
-
-    //endregion for paging
 
 }
