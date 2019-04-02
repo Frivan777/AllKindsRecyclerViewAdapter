@@ -1,21 +1,19 @@
-package com.frivan.tools.adapter.base
+package com.frivan.tools.view.base.adapter.base
 
-import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 
-const val PLACEHOLDER_TYPE = -1
-
-abstract class BasePagedListItemAdapter<T : ItemData> : PagedListAdapter<T, BaseItemViewHolder<T>> {
+abstract class BaseItemAdapter<T : ItemData> : ListAdapter<T, BaseItemViewHolder<T>> {
 
     constructor(diffCallback: DiffUtil.ItemCallback<T>) : super(diffCallback)
 
     constructor(config: AsyncDifferConfig<T>) : super(config)
 
-    //region PagedListAdapter
+    //region RecyclerView.Adapter
 
     override fun onBindViewHolder(holder: BaseItemViewHolder<T>, position: Int) {
-        holder.onBind(getItem(position))
+        holder.onBind(this.getItem(position))
     }
 
     override fun onViewRecycled(holder: BaseItemViewHolder<T>) {
@@ -25,9 +23,9 @@ abstract class BasePagedListItemAdapter<T : ItemData> : PagedListAdapter<T, Base
     }
 
     override fun getItemViewType(position: Int): Int {
-        return getItem(position)?.type ?: PLACEHOLDER_TYPE
+        return this.getItem(position).type
     }
 
-    //endregion PagedListAdapter
+    //endregion RecyclerView.Adapter
 
 }

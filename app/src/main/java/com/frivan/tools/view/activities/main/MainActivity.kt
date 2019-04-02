@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.frivan.tools.R
 import com.frivan.tools.view.activities.AnimationActivity
-import com.frivan.tools.adapter.base.ItemData
 import com.frivan.tools.view.activities.main.datasourse.ItemDataSource
 import com.frivan.tools.view.activities.main.datasourse.ItemDataSourceFactory
+import com.frivan.tools.view.base.adapter.base.ItemData
 import com.frivan.tools.view.decoration.LoadingItemDecoration
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -60,35 +60,35 @@ class MainActivity : AppCompatActivity() {
         val adapter = com.frivan.tools.view.activities.main.adapters.allsorts.paged.AllKindsAdapter()
 
         val config = PagedList.Config.Builder()
-            .setEnablePlaceholders(false)
-            .setPageSize(PAGE_SIZE)
-            .setInitialLoadSizeHint(PAGE_SIZE * 2) //default = PageSize * 3
-            .setPrefetchDistance(PAGE_SIZE) //default = PageSize
-            .build()
+                .setEnablePlaceholders(false)
+                .setPageSize(PAGE_SIZE)
+                .setInitialLoadSizeHint(PAGE_SIZE * 2) //default = PageSize * 3
+                .setPrefetchDistance(PAGE_SIZE) //default = PageSize
+                .build()
 
         val itemDataSourceFactory = ItemDataSourceFactory()
 
         val pagedListData = LivePagedListBuilder<Int, ItemData>(itemDataSourceFactory, config)
-            .setFetchExecutor(Executors.newSingleThreadExecutor())
-            .setBoundaryCallback(object : PagedList.BoundaryCallback<ItemData?>() {
-                override fun onZeroItemsLoaded() {
-                    super.onZeroItemsLoaded()
-                }
+                .setFetchExecutor(Executors.newSingleThreadExecutor())
+                .setBoundaryCallback(object : PagedList.BoundaryCallback<ItemData?>() {
+                    override fun onZeroItemsLoaded() {
+                        super.onZeroItemsLoaded()
+                    }
 
-                override fun onItemAtEndLoaded(itemAtEnd: ItemData) {
-                    super.onItemAtEndLoaded(itemAtEnd)
-                }
+                    override fun onItemAtEndLoaded(itemAtEnd: ItemData) {
+                        super.onItemAtEndLoaded(itemAtEnd)
+                    }
 
-                override fun onItemAtFrontLoaded(itemAtFront: ItemData) {
-                    super.onItemAtFrontLoaded(itemAtFront)
-                }
-            })
-            .also {
-                savedInstanceState?.getInt(EXTRA_POSITION)?.let { position ->
-                    Log.d(this.javaClass.name, "setInitialKey=$position")
-                    it.setInitialLoadKey(position)
-                }
-            }.build()
+                    override fun onItemAtFrontLoaded(itemAtFront: ItemData) {
+                        super.onItemAtFrontLoaded(itemAtFront)
+                    }
+                })
+                .also {
+                    savedInstanceState?.getInt(EXTRA_POSITION)?.let { position ->
+                        Log.d(this.javaClass.name, "setInitialKey=$position")
+                        it.setInitialLoadKey(position)
+                    }
+                }.build()
 
         pagedListData.observe(this, Observer { })
 
@@ -102,15 +102,15 @@ class MainActivity : AppCompatActivity() {
         })
 
         val pagedList = PagedList.Builder(itemDataSource, config)
-            .setFetchExecutor(MainThreadExecutor())
-            .setNotifyExecutor(MainThreadExecutor())
-            .also {
-                savedInstanceState?.getInt(EXTRA_POSITION)?.let { position ->
-                    Log.d(this.javaClass.name, "setInitialKey=$position")
-                    it.setInitialKey(position)
+                .setFetchExecutor(MainThreadExecutor())
+                .setNotifyExecutor(MainThreadExecutor())
+                .also {
+                    savedInstanceState?.getInt(EXTRA_POSITION)?.let { position ->
+                        Log.d(this.javaClass.name, "setInitialKey=$position")
+                        it.setInitialKey(position)
+                    }
                 }
-            }
-            .build()
+                .build()
 
         adapter.submitList(pagedList)
 
@@ -185,8 +185,8 @@ class MainActivity : AppCompatActivity() {
         val typedValue = TypedValue()
         this.theme.resolveAttribute(androidx.appcompat.R.attr.actionBarSize, typedValue, true)
         val offset = TypedValue.complexToDimensionPixelSize(
-            typedValue.data,
-            resources.displayMetrics
+                typedValue.data,
+                resources.displayMetrics
         )
         this.swipeRefresh.isEnabled = false
         this.swipeRefresh.setProgressViewOffset(false, 0, offset)

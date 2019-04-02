@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.frivan.tools.R
-import com.frivan.tools.adapter.base.BaseItemAdapter
-import com.frivan.tools.adapter.base.BaseItemViewHolder
+import com.frivan.tools.view.base.adapter.base.BaseItemAdapter
+import com.frivan.tools.view.base.adapter.base.BaseItemViewHolder
 
 class AnimalAdapter() : BaseItemAdapter<AnimalData>(AnimalDiffCalback()) {
 

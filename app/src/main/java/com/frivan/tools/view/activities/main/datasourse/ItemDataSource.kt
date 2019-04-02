@@ -2,16 +2,14 @@ package com.frivan.tools.view.activities.main.datasourse
 
 import android.util.Log
 import androidx.paging.PositionalDataSource
-import com.frivan.tools.view.activities.main.adapters.allsorts.ContentData
-import com.frivan.tools.adapter.base.ItemData
 import com.frivan.tools.data.FakeContentStorage
+import com.frivan.tools.view.activities.main.adapters.allsorts.ContentData
+import com.frivan.tools.view.base.adapter.base.ItemData
 
-class ItemDataSource(
-    private val loadingCallback: (() -> Unit)? = null,
-    private val endLoadingCallback: (() -> Unit)? = null,
-    private val contentStorage: FakeContentStorage = FakeContentStorage()
-) :
-    PositionalDataSource<ItemData>() {
+class ItemDataSource(private val loadingCallback: (() -> Unit)? = null,
+                     private val endLoadingCallback: (() -> Unit)? = null,
+                     private val contentStorage: FakeContentStorage = FakeContentStorage()
+) : PositionalDataSource<ItemData>() {
 
     override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<ItemData>) {
         loadingCallback?.invoke()

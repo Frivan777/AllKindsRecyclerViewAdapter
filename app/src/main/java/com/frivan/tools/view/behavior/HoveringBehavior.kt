@@ -11,9 +11,8 @@ import com.google.android.material.appbar.AppBarLayout
 
 private const val DECORATION_POSITION = 0
 
-class HoveringBehavior(
-    context: Context,
-    attrs: AttributeSet
+class HoveringBehavior(context: Context,
+                       attrs: AttributeSet
 ) : CoordinatorLayout.Behavior<RecyclerView>(context, attrs) {
 
     private var lastY = 0F
@@ -50,8 +49,8 @@ class HoveringBehavior(
 
                 parent.context.theme.resolveAttribute(androidx.appcompat.R.attr.actionBarSize, typedValue, true)
                 outRect.top = TypedValue.complexToDimensionPixelSize(
-                    typedValue.data,
-                    parent.resources.displayMetrics
+                        typedValue.data,
+                        parent.resources.displayMetrics
                 )
             } else {
                 outRect.top = 0

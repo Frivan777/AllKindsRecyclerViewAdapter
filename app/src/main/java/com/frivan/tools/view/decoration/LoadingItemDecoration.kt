@@ -11,7 +11,7 @@ import com.frivan.tools.R
 
 class LoadingItemDecoration : RecyclerView.ItemDecoration() {
 
-    var decorationView: View? = null
+    private var decorationView: View? = null
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         super.getItemOffsets(outRect, view, parent, state)
@@ -45,17 +45,18 @@ class LoadingItemDecoration : RecyclerView.ItemDecoration() {
             decorationView = LayoutInflater.from(parent.context).inflate(R.layout.item_loading, parent, false)
 
             val widthSpec = View.MeasureSpec.makeMeasureSpec(
-                parent.width,
-                View.MeasureSpec.EXACTLY
+                    parent.width,
+                    View.MeasureSpec.EXACTLY
             )
             val heightSpec = View.MeasureSpec.makeMeasureSpec(
-                parent.height,
-                View.MeasureSpec.UNSPECIFIED
+                    parent.height,
+                    View.MeasureSpec.UNSPECIFIED
             )
 
             decorationView?.measure(widthSpec, heightSpec)
 
-            decorationView?.layout(0, 0, decorationView?.measuredWidth ?: 0, (decorationView?.measuredHeight ?: 0))
+            decorationView?.layout(0, 0, decorationView?.measuredWidth
+                    ?: 0, (decorationView?.measuredHeight ?: 0))
 
             decorationView
         } else {
