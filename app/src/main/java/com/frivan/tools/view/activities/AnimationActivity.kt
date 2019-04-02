@@ -6,13 +6,15 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.frivan.tools.R
-import com.frivan.tools.view.fragments.SimpleFragment
+import com.frivan.tools.view.fragments.animation.simple.SimpleFragment
+import kotlinx.android.synthetic.main.activity_animation.*
 
 class AnimationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_animation)
+        setSupportActionBar(this.toolbar)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -34,7 +36,7 @@ class AnimationActivity : AppCompatActivity() {
 
     private fun showFragment(fragment: Fragment) {
         this.supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, fragment)
-                .commit()
+            .replace(R.id.fragmentContainer, fragment)
+            .commit()
     }
 }
