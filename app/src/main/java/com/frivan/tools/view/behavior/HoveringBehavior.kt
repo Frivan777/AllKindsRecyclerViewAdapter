@@ -1,4 +1,4 @@
-package com.frivan.tools.behavior
+package com.frivan.tools.view.behavior
 
 import android.content.Context
 import android.graphics.Rect

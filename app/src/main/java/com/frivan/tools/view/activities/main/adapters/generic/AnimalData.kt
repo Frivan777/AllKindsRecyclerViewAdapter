@@ -1,4 +1,4 @@
-package com.frivan.tools.adapter.generic
+package com.frivan.tools.view.activities.main.adapters.generic
 
 import com.frivan.tools.R
 import com.frivan.tools.adapter.base.ItemData

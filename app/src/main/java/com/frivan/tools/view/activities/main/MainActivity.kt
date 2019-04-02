@@ -1,5 +1,6 @@
-package com.frivan.tools
+package com.frivan.tools.view.activities.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,10 +12,12 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.frivan.tools.R
+import com.frivan.tools.view.activities.AnimationActivity
 import com.frivan.tools.adapter.base.ItemData
-import com.frivan.tools.data.item.ItemDataSource
-import com.frivan.tools.data.item.ItemDataSourceFactory
-import com.frivan.tools.decoration.LoadingItemDecoration
+import com.frivan.tools.view.activities.main.datasourse.ItemDataSource
+import com.frivan.tools.view.activities.main.datasourse.ItemDataSourceFactory
+import com.frivan.tools.view.decoration.LoadingItemDecoration
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import java.util.concurrent.Executor
@@ -35,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         fab.setOnClickListener {
-            this.initView(savedInstanceState)
+            this.startActivity(Intent(this, AnimationActivity::class.java))
         }
 
         this.initView(savedInstanceState)
@@ -54,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         //region Paged AllKindsAdapter
 
-        val adapter = com.frivan.tools.adapter.allsorts.paged.AllKindsAdapter()
+        val adapter = com.frivan.tools.view.activities.main.adapters.allsorts.paged.AllKindsAdapter()
 
         val config = PagedList.Config.Builder()
             .setEnablePlaceholders(false)

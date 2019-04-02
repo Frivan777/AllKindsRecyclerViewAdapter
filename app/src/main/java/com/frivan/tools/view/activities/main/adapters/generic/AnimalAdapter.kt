@@ -1,4 +1,4 @@
-package com.frivan.tools.adapter.generic
+package com.frivan.tools.view.activities.main.adapters.generic
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

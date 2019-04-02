@@ -1,8 +1,8 @@
-package com.frivan.tools.data.item
+package com.frivan.tools.view.activities.main.datasourse
 
 import android.util.Log
 import androidx.paging.PositionalDataSource
-import com.frivan.tools.adapter.allsorts.ContentData
+import com.frivan.tools.view.activities.main.adapters.allsorts.ContentData
 import com.frivan.tools.adapter.base.ItemData
 import com.frivan.tools.data.FakeContentStorage
 

@@ -1,4 +1,4 @@
-package com.frivan.tools.adapter.allsorts.paged
+package com.frivan.tools.view.activities.main.adapters.allsorts.paged
 
 import android.view.View
 import com.frivan.tools.adapter.base.BaseItemViewHolder

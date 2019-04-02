@@ -7,8 +7,8 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="com.frivan.tools.behavior.HoveringBehavior"
+        app:layout_behavior="com.frivan.tools.view.behavior.HoveringBehavior"
         tools:showIn="@layout/activity_main"
-        tools:context=".MainActivity"
+        tools:context=".view.activities.main.MainActivity"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:orientation="vertical"/>

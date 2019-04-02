@@ -1,4 +1,4 @@
-package com.frivan.tools.decoration
+package com.frivan.tools.view.decoration
 
 import android.graphics.Canvas
 import android.graphics.Rect

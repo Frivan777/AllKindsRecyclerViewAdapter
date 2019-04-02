@@ -1,11 +1,11 @@
-package com.frivan.tools.adapter.allsorts.paged
+package com.frivan.tools.view.activities.main.adapters.allsorts.paged
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.frivan.tools.R
-import com.frivan.tools.adapter.allsorts.ContentViewHolder
-import com.frivan.tools.adapter.allsorts.DelimiterViewHolder
+import com.frivan.tools.view.activities.main.adapters.allsorts.ContentViewHolder
+import com.frivan.tools.view.activities.main.adapters.allsorts.DelimiterViewHolder
 import com.frivan.tools.adapter.base.BaseItemViewHolder
 import com.frivan.tools.adapter.base.BasePagedListItemAdapter
 import com.frivan.tools.adapter.base.ItemData
