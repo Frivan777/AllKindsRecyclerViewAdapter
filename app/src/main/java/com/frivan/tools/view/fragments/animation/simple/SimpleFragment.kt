@@ -1,10 +1,8 @@
 package com.frivan.tools.view.fragments.animation.simple
 
+import android.graphics.Rect
 import android.os.Bundle
-import android.view.GestureDetector
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.animation.AccelerateInterpolator
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
@@ -20,15 +18,18 @@ private const val SWIPE_BOTTOM_ANIMATION_DURATION = 1000L
 
 class SimpleFragment : Fragment() {
 
-    private lateinit var gestureDetector: GestureDetector
-
     companion object {
+
         fun newInstance() = SimpleFragment()
+
     }
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    private lateinit var gestureDetector: GestureDetector
+
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_simple, container, false)
     }
 
@@ -43,40 +44,21 @@ class SimpleFragment : Fragment() {
             this.startSimpleAnimation()
         }
 
-        gestureDetector = GestureDetector(this.context, AnimationGestureListener(object : AnimationGestureListener.SwipeCallback {
-            override fun onSwipe(type: Int) {
-                if (this@SimpleFragment.context == null) {
-                    return
-                }
-
-                when (type) {
-                    LEFT -> this@SimpleFragment.showScene(R.layout.fragment_simple_scene_1)
-                    RIGHT -> this@SimpleFragment.showScene(R.layout.fragment_simple_scene_2)
-                    TOP -> {
-                        val set = TransitionSet().apply {
-                            addTransition(Fade())
-                            addTransition(ChangeBounds())
-                            ordering = TransitionSet.ORDERING_TOGETHER
-                            duration = SWIPE_TOP_ANIMATION_DURATION
-                            interpolator = AccelerateInterpolator()
+        gestureDetector =
+                GestureDetector(this.context, AnimationGestureListener(object : AnimationGestureListener.SwipeCallback {
+                    override fun onSwipe(type: Int) {
+                        if (this@SimpleFragment.context == null) {
+                            return
                         }
 
-                        this@SimpleFragment.showScene(R.layout.fragment_simple_scene_2, set)
-                    }
-                    BOTTOM -> {
-                        val set = TransitionSet().apply {
-                            addTransition(Fade())
-                            addTransition(ChangeBounds())
-                            ordering = TransitionSet.ORDERING_TOGETHER
-                            duration = SWIPE_TOP_ANIMATION_DURATION
-                            interpolator = AccelerateInterpolator()
+                        when (type) {
+                            LEFT -> this@SimpleFragment.showScene(R.layout.fragment_simple_scene_1)
+                            RIGHT -> this@SimpleFragment.showScene(R.layout.fragment_simple_scene_2)
+                            TOP -> this@SimpleFragment.showSwipeTopAnimation()
+                            BOTTOM -> this@SimpleFragment.showSwipeBottomAnimation()
                         }
-
-                        this@SimpleFragment.showScene(R.layout.fragment_simple_scene_1, set)
                     }
-                }
-            }
-        }))
+                }))
 
         this.view?.setOnTouchListener { _, event ->
             this.gestureDetector.onTouchEvent(event)
@@ -85,7 +67,7 @@ class SimpleFragment : Fragment() {
     }
 
     /*
-    * Transition:ChangeBounds, Fade, TransitionSet, AutoTransition
+    * Transition:ChangeBounds, Fade, TransitionSet, AutoTransition, Slide,
     * */
     private fun showScene(@LayoutRes layoutId: Int, transition: Transition? = null) {
         this@SimpleFragment.context?.let {
@@ -112,6 +94,85 @@ class SimpleFragment : Fragment() {
 
         TransitionManager.beginDelayedTransition(this.rootView)
         squareView.layoutParams = params
+    }
+
+    private fun showSwipeTopAnimation() {
+        val slideTransitionSet = TransitionSet().apply {
+            addTransition(Slide(Gravity.END))
+            addTransition(ChangeBounds())
+            ordering = TransitionSet.ORDERING_TOGETHER
+        }
+
+        val set = TransitionSet().apply {
+            addTransition(slideTransitionSet)
+            addTransition(Fade(Fade.MODE_IN))
+
+            ordering = TransitionSet.ORDERING_SEQUENTIAL
+            duration = SWIPE_TOP_ANIMATION_DURATION
+            interpolator = AccelerateInterpolator()
+        }
+
+        val explodeTransitionSet = TransitionSet().apply {
+            addTransition(set.apply {
+                excludeTarget(R.id.explode, true)
+            })
+            addTransition(Explode().apply {
+                epicenterCallback = object : Transition.EpicenterCallback() {
+                    override fun onGetEpicenter(transition: Transition): Rect {
+                        val viewRect = Rect()
+                        this@SimpleFragment.squareView.getGlobalVisibleRect(viewRect)
+
+                        return viewRect
+                    }
+                }
+
+                addTarget(R.id.explode)
+            })
+            ordering = TransitionSet.ORDERING_SEQUENTIAL
+        }
+
+        this.showScene(R.layout.fragment_simple_scene_2, explodeTransitionSet)
+    }
+
+    private fun showSwipeBottomAnimation() {
+        val fadeTransitionSet = TransitionSet().apply {
+            addTransition(Fade(Fade.MODE_IN))
+            addTransition(Fade(Fade.MODE_OUT))
+            ordering = TransitionSet.ORDERING_TOGETHER
+        }
+
+        val set = TransitionSet().apply {
+            addTransition(fadeTransitionSet)
+            addTransition(ChangeBounds())
+
+            ordering = TransitionSet.ORDERING_SEQUENTIAL
+            duration = SWIPE_TOP_ANIMATION_DURATION
+            interpolator = AccelerateInterpolator()
+        }
+
+        this.showScene(R.layout.fragment_simple_scene_1, set)
+    }
+
+    private abstract class TransitionListener : Transition.TransitionListener {
+        override fun onTransitionEnd(transition: Transition) {
+            //Do nothing
+        }
+
+        override fun onTransitionResume(transition: Transition) {
+            //Do nothing
+        }
+
+        override fun onTransitionPause(transition: Transition) {
+            //Do nothing
+        }
+
+        override fun onTransitionCancel(transition: Transition) {
+            //Do nothing
+        }
+
+        override fun onTransitionStart(transition: Transition) {
+            //Do nothing
+        }
     }
 
 }

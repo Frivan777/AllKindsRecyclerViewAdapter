@@ -2,4 +2,6 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="simple_square_start_size">50dp</dimen>
     <dimen name="simple_square_end_size">150dp</dimen>
+    <dimen name="start_image_size">150dp</dimen>
+    <dimen name="end_image_size">350dp</dimen>
 </resources>

@@ -6,6 +6,8 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.frivan.tools.R
+import com.frivan.tools.view.fragments.animation.explode.ExplodeFragment
+import com.frivan.tools.view.fragments.animation.image.ImageFragment
 import com.frivan.tools.view.fragments.animation.simple.SimpleFragment
 import kotlinx.android.synthetic.main.activity_animation.*
 
@@ -30,13 +32,24 @@ class AnimationActivity : AppCompatActivity() {
 
                 true
             }
+
+            R.id.action_explode -> {
+                this.showFragment(ExplodeFragment.newInstance())
+
+                true
+            }
+            R.id.action_image -> {
+                this.showFragment(ImageFragment.newInstance())
+
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
     private fun showFragment(fragment: Fragment) {
         this.supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, fragment)
-            .commit()
+                .replace(R.id.fragmentContainer, fragment)
+                .commit()
     }
 }
