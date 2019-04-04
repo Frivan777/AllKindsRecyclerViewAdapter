@@ -7,7 +7,7 @@ import kotlinx.android.synthetic.main.item_content.*
 class AnimalViewHolder(view: View) : BaseItemViewHolder<AnimalData>(view) {
 
     override fun onBind(itemData: AnimalData?) {
-        title.text = itemData?.name
+        this.title.text = itemData?.name
     }
 
 }

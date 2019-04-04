@@ -21,4 +21,10 @@
         android:title="Image"
         app:showAsAction="never" />
 
+    <item
+            android:id="@+id/action_activity_share"
+            android:orderInCategory="100"
+            android:title="Activity Share"
+            app:showAsAction="never" />
+
 </menu>

@@ -12,7 +12,7 @@ class ContentViewHolder(view: View) : BaseItemViewHolder<ItemData>(view) {
             return
         }
 
-        title?.text = itemData.name
+        this.title?.text = itemData.name
     }
 
 }

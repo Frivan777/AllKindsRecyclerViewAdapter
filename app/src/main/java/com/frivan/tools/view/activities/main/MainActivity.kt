@@ -13,7 +13,7 @@ import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.frivan.tools.R
-import com.frivan.tools.view.activities.AnimationActivity
+import com.frivan.tools.view.activities.animation.main.AnimationActivity
 import com.frivan.tools.view.activities.main.datasourse.ItemDataSource
 import com.frivan.tools.view.activities.main.datasourse.ItemDataSourceFactory
 import com.frivan.tools.view.base.adapter.base.ItemData

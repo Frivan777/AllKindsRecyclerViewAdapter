@@ -1,4 +1,4 @@
-package com.frivan.tools.view.activities
+package com.frivan.tools.view.activities.animation.main
 
 import android.os.Bundle
 import android.view.Menu
@@ -6,6 +6,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.frivan.tools.R
+import com.frivan.tools.view.activities.animation.share.list.ContactListActivity
 import com.frivan.tools.view.fragments.animation.explode.ExplodeFragment
 import com.frivan.tools.view.fragments.animation.image.ImageFragment
 import com.frivan.tools.view.fragments.animation.simple.SimpleFragment
@@ -40,6 +41,11 @@ class AnimationActivity : AppCompatActivity() {
             }
             R.id.action_image -> {
                 this.showFragment(ImageFragment.newInstance())
+
+                true
+            }
+            R.id.action_activity_share -> {
+                this.startActivity(ContactListActivity.newIntent(this))
 
                 true
             }
