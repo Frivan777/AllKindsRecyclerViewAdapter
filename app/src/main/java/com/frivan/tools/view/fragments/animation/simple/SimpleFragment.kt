@@ -78,7 +78,6 @@ class SimpleFragment : Fragment() {
             } ?: run {
                 TransitionManager.go(scene)
             }
-
         }
     }
 
@@ -151,28 +150,6 @@ class SimpleFragment : Fragment() {
         }
 
         this.showScene(R.layout.fragment_simple_scene_1, set)
-    }
-
-    private abstract class TransitionListener : Transition.TransitionListener {
-        override fun onTransitionEnd(transition: Transition) {
-            //Do nothing
-        }
-
-        override fun onTransitionResume(transition: Transition) {
-            //Do nothing
-        }
-
-        override fun onTransitionPause(transition: Transition) {
-            //Do nothing
-        }
-
-        override fun onTransitionCancel(transition: Transition) {
-            //Do nothing
-        }
-
-        override fun onTransitionStart(transition: Transition) {
-            //Do nothing
-        }
     }
 
 }

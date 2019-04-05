@@ -4,10 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.transition.Transition
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.graphics.drawable.toBitmap
+import androidx.transition.*
 import com.frivan.tools.R
-import kotlinx.android.synthetic.main.activity_detail_contact.*
+import com.frivan.tools.utils.extensions.showScene
+import com.frivan.tools.view.base.transition.android.TransitionListener
+import kotlinx.android.synthetic.main.activity_detail_contact_scene_1.*
 
 class DetailContactActivity : AppCompatActivity() {
 
@@ -28,7 +33,7 @@ class DetailContactActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_detail_contact)
+        setContentView(R.layout.activity_detail_contact_scene_1)
 
         this.initView()
     }
@@ -36,5 +41,40 @@ class DetailContactActivity : AppCompatActivity() {
     private fun initView() {
         this.name.text = this.intent.getStringExtra(EXTRA_NAME)
         this.icon.setImageBitmap(this.intent.getParcelableExtra(EXTRA_IMAGE))
+
+        this.window.sharedElementEnterTransition.addListener(object : TransitionListener() {
+
+            override fun onTransitionEnd(transition: Transition) {
+                super.onTransitionEnd(transition)
+
+                this@DetailContactActivity.showViews()
+
+//                val scene = Scene.getSceneForLayout(root, R.layout.activity_detail_contact_scene_1, this@DetailContactActivity)
+//                scene.enter()
+//
+//                this@DetailContactActivity.showScene(R.layout.activity_detail_contact_scene_2,
+//                        Explode().apply {
+//                            excludeTarget(R.id.view, true)
+//                        }, this@DetailContactActivity.root)
+            }
+        })
+    }
+
+    private fun showViews() {
+        val set = ConstraintSet().apply {
+            clone(this@DetailContactActivity, R.layout.activity_detail_contact_scene_2)
+        }
+
+        TransitionManager.beginDelayedTransition(this.root, TransitionSet().apply {
+            duration = 100
+            ordering = TransitionSet.ORDERING_TOGETHER
+            addTransition(ChangeBounds())
+            addTransition(Fade(Fade.IN))
+        }.also {
+            it.excludeTarget(R.id.icon, true)
+            it.excludeTarget(R.id.name, true)
+        })
+
+        set.applyTo(this.root)
     }
 }

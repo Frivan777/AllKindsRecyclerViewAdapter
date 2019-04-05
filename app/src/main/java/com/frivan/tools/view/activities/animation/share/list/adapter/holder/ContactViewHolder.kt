@@ -1,7 +1,6 @@
 package com.frivan.tools.view.activities.animation.share.list.adapter.holder
 
 import android.view.View
-import android.widget.ImageView
 import com.frivan.tools.utils.DebounceClickUtil
 import com.frivan.tools.view.activities.animation.share.list.adapter.data.ContactData
 import com.frivan.tools.view.base.adapter.base.BaseItemViewHolder
@@ -10,7 +9,7 @@ import kotlinx.android.synthetic.main.item_contact.*
 
 
 class ContactViewHolder(view: View,
-                        private val itemClick: ((Triple<Int, String, ImageView>) -> Unit)? = null)
+                        private val itemClick: ((Pair<Int, View>) -> Unit)? = null)
     : BaseItemViewHolder<ItemData>(view) {
 
     override fun onBind(itemData: ItemData?) {
@@ -22,7 +21,7 @@ class ContactViewHolder(view: View,
         this.icon.setImageResource(itemData.icon)
 
         this.root.setOnClickListener(DebounceClickUtil({
-            this.itemClick?.invoke(Triple(this.adapterPosition, itemData.name, this.icon))
+            this.itemClick?.invoke(Pair(this.adapterPosition, this.itemView))
         }))
     }
 

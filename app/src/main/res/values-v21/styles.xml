@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme.ContactListActivity">
+        <item name="android:windowActivityTransitions">true</item>
+    </style>
+
+    <style name="AppTheme.DetailContactActivity">
+        <item name="android:windowActivityTransitions">true</item>
+
+        <item name="android:windowSharedElementEnterTransition">@transition/detail_contact_enter_transition</item>
+
+        <item name="android:windowSharedElementExitTransition">@transition/detail_contact_exit_transition</item>
+    </style>
+
+</resources>

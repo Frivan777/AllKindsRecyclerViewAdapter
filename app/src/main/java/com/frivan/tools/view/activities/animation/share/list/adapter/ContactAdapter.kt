@@ -1,8 +1,8 @@
 package com.frivan.tools.view.activities.animation.share.list.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import com.frivan.tools.R
 import com.frivan.tools.view.activities.animation.share.list.adapter.holder.ContactViewHolder
@@ -11,7 +11,7 @@ import com.frivan.tools.view.base.adapter.base.BaseItemAdapter
 import com.frivan.tools.view.base.adapter.base.BaseItemViewHolder
 import com.frivan.tools.view.base.adapter.base.ItemData
 
-class ContactAdapter(private val itemClick: ((Triple<Int, String, ImageView>) -> Unit)? = null) : BaseItemAdapter<ItemData>(AllKindsDiffCallback()) {
+class ContactAdapter(private val itemClick: ((Pair<Int, View>) -> Unit)? = null) : BaseItemAdapter<ItemData>(AllKindsDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseItemViewHolder<ItemData> {
         return when (viewType) {

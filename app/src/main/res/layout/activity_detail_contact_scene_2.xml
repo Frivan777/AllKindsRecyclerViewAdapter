@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Gray_800"
@@ -9,6 +10,7 @@
 
     <View
         android:id="@+id/view"
+        android:transitionName="view"
         android:layout_width="wrap_content"
         android:layout_height="200dp"
         android:background="@drawable/background_contact_detail"
@@ -23,25 +25,25 @@
         android:layout_margin="16dp"
         android:transitionName="@string/detail_transition_name_icon"
         app:layout_constraintBottom_toBottomOf="@id/view"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/view"
+        app:layout_constraintStart_toStartOf="@id/view"
+        app:layout_constraintTop_toTopOf="@id/view"
         tools:src="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/name"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
         android:fontFamily="sans-serif-light"
         android:textColor="@android:color/white"
         android:textSize="23sp"
         android:transitionName="@string/detail_transition_name_title"
-        app:layout_constraintBottom_toBottomOf="@id/icon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/icon"
-        app:layout_constraintTop_toTopOf="@id/icon"
+        app:layout_constraintEnd_toEndOf="@id/icon"
+        app:layout_constraintStart_toStartOf="@id/icon"
+        app:layout_constraintTop_toBottomOf="@id/icon"
         tools:text="Ivan Frankov" />
 
     <ImageView
@@ -54,6 +56,7 @@
         app:layout_constraintTop_toBottomOf="@id/view" />
 
     <TextView
+        android:id="@+id/emailValue"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
@@ -76,6 +79,7 @@
         app:layout_constraintTop_toBottomOf="@id/email" />
 
     <TextView
+        android:id="@+id/phoneValue"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
@@ -98,6 +102,7 @@
         app:layout_constraintTop_toBottomOf="@id/phone" />
 
     <TextView
+        android:id="@+id/addressValue"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
@@ -109,6 +114,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/address"
         app:layout_constraintTop_toTopOf="@id/address" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
