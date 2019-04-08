@@ -4,13 +4,19 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.transition.Explode
+import android.transition.Slide
 import android.transition.Transition
+import android.view.Gravity
+import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.graphics.drawable.toBitmap
-import androidx.transition.*
+import androidx.transition.ChangeBounds
+import androidx.transition.Fade
+import androidx.transition.TransitionManager
+import androidx.transition.TransitionSet
 import com.frivan.tools.R
-import com.frivan.tools.utils.extensions.showScene
 import com.frivan.tools.view.base.transition.android.TransitionListener
 import kotlinx.android.synthetic.main.activity_detail_contact_scene_1.*
 
@@ -33,6 +39,13 @@ class DetailContactActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        with(window) {
+            requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+
+            enterTransition = Slide(Gravity.START).addTarget(R.id.emailValue)
+        }
+
         setContentView(R.layout.activity_detail_contact_scene_1)
 
         this.initView()
@@ -47,7 +60,7 @@ class DetailContactActivity : AppCompatActivity() {
             override fun onTransitionEnd(transition: Transition) {
                 super.onTransitionEnd(transition)
 
-                this@DetailContactActivity.showViews()
+//                this@DetailContactActivity.showViews()
 
 //                val scene = Scene.getSceneForLayout(root, R.layout.activity_detail_contact_scene_1, this@DetailContactActivity)
 //                scene.enter()

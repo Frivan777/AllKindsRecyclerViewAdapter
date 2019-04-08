@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.fragment_simple_scene_1.*
 
 private const val SWIPE_TOP_ANIMATION_DURATION = 1000L
 
-private const val SWIPE_BOTTOM_ANIMATION_DURATION = 1000L
+private const val CHANGE_TRANSFORM_ANIMATION_DURATION = 1000L
 
 class SimpleFragment : Fragment() {
 
@@ -127,10 +127,21 @@ class SimpleFragment : Fragment() {
 
                 addTarget(R.id.explode)
             })
+
             ordering = TransitionSet.ORDERING_SEQUENTIAL
         }
 
-        this.showScene(R.layout.fragment_simple_scene_2, explodeTransitionSet)
+        val changeTransformSet = TransitionSet().apply {
+            addTransition(ChangeTransform().apply {
+                addTarget(R.id.sun)
+                duration = CHANGE_TRANSFORM_ANIMATION_DURATION
+            })
+            addTransition(explodeTransitionSet)
+
+            ordering = TransitionSet.ORDERING_TOGETHER
+        }
+
+        this.showScene(R.layout.fragment_simple_scene_2, changeTransformSet)
     }
 
     private fun showSwipeBottomAnimation() {
@@ -149,7 +160,18 @@ class SimpleFragment : Fragment() {
             interpolator = AccelerateInterpolator()
         }
 
-        this.showScene(R.layout.fragment_simple_scene_1, set)
+        val changeTransformSet = TransitionSet().apply {
+            addTransition(ChangeTransform().apply {
+                addTarget(R.id.sun)
+                addTarget(R.id.squareView)
+                duration = CHANGE_TRANSFORM_ANIMATION_DURATION
+            })
+            addTransition(set)
+
+            ordering = TransitionSet.ORDERING_TOGETHER
+        }
+
+        this.showScene(R.layout.fragment_simple_scene_1, changeTransformSet)
     }
 
 }

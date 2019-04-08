@@ -8,11 +8,13 @@ import androidx.transition.Transition
 import androidx.transition.TransitionManager
 
 /*
-  * Transition:ChangeBounds, Fade, TransitionSet, AutoTransition, Slide,
+  * Transition:ChangeBounds, Fade, TransitionSet, AutoTransition, Slide, ChangeTransform
   * */
-fun AppCompatActivity.showScene(@LayoutRes layoutId: Int,
-                                transition: Transition? = null,
-                                root: ViewGroup? = this.window.decorView.rootView as? ViewGroup) {
+fun AppCompatActivity.showScene(
+    @LayoutRes layoutId: Int,
+    transition: Transition? = null,
+    root: ViewGroup? = this.window.decorView.rootView as? ViewGroup
+) {
     if (root == null) {
         return
     }

@@ -6,4 +6,6 @@
 
     <string name="detail_transition_name_title">name</string>
     <string name="detail_transition_name_icon">icon</string>
+    <string name="transition_name_image">image</string>
+    <string name="transition_name_screen">screen</string>
 </resources>
