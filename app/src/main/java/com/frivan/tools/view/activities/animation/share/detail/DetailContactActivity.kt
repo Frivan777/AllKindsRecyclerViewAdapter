@@ -4,10 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.transition.Explode
-import android.transition.Slide
 import android.transition.Transition
-import android.view.Gravity
 import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
@@ -28,6 +25,8 @@ class DetailContactActivity : AppCompatActivity() {
 
         private const val EXTRA_IMAGE = "image"
 
+        private const val FADE_ANIMATION_DURATION = 100L
+
         fun newIntent(context: Context, name: String, image: Drawable): Intent {
             return Intent(context, DetailContactActivity::class.java).apply {
                 putExtra(EXTRA_NAME, name)
@@ -40,11 +39,7 @@ class DetailContactActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        with(window) {
-            requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
-
-            enterTransition = Slide(Gravity.START).addTarget(R.id.emailValue)
-        }
+//        this.setupTransition()
 
         setContentView(R.layout.activity_detail_contact_scene_1)
 
@@ -55,22 +50,41 @@ class DetailContactActivity : AppCompatActivity() {
         this.name.text = this.intent.getStringExtra(EXTRA_NAME)
         this.icon.setImageBitmap(this.intent.getParcelableExtra(EXTRA_IMAGE))
 
+//        this.supportPostponeEnterTransition()
+//        this.name.postDelayed({
+//            this.supportStartPostponedEnterTransition()
+//        }, 2000)
+
+
         this.window.sharedElementEnterTransition.addListener(object : TransitionListener() {
 
             override fun onTransitionEnd(transition: Transition) {
                 super.onTransitionEnd(transition)
 
-//                this@DetailContactActivity.showViews()
-
-//                val scene = Scene.getSceneForLayout(root, R.layout.activity_detail_contact_scene_1, this@DetailContactActivity)
+                this@DetailContactActivity.showViews()
+//
+//                val scene =
+//                    Scene.getSceneForLayout(root, R.layout.activity_detail_contact_scene_1, this@DetailContactActivity)
 //                scene.enter()
 //
 //                this@DetailContactActivity.showScene(R.layout.activity_detail_contact_scene_2,
-//                        Explode().apply {
-//                            excludeTarget(R.id.view, true)
-//                        }, this@DetailContactActivity.root)
+//                    Explode().apply {
+//                        excludeTarget(R.id.view, true)
+//                    }, this@DetailContactActivity.root
+//                )
             }
         })
+    }
+
+    private fun setupTransition() {
+        with(window) {
+            requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+
+            enterTransition = android.transition.Fade(Fade.IN).apply {
+                duration = FADE_ANIMATION_DURATION
+                addTarget(R.id.emailValue)
+            }
+        }
     }
 
     private fun showViews() {
@@ -79,7 +93,7 @@ class DetailContactActivity : AppCompatActivity() {
         }
 
         TransitionManager.beginDelayedTransition(this.root, TransitionSet().apply {
-            duration = 100
+            duration = FADE_ANIMATION_DURATION
             ordering = TransitionSet.ORDERING_TOGETHER
             addTransition(ChangeBounds())
             addTransition(Fade(Fade.IN))

@@ -8,6 +8,8 @@
     <style name="AppTheme.DetailContactActivity">
         <item name="android:windowActivityTransitions">true</item>
 
+        <item name="android:windowSharedElementsUseOverlay">false</item>
+
         <item name="android:windowSharedElementEnterTransition">@transition/detail_contact_enter_transition</item>
 
         <item name="android:windowSharedElementExitTransition">@transition/detail_contact_exit_transition</item>
