@@ -1,4 +1,4 @@
-package com.frivan.tools.view.activities.animation.image
+package com.frivan.tools.view.activities.animation.share.image
 
 import android.content.Context
 import android.content.Intent
@@ -7,6 +7,7 @@ import android.view.Gravity
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.transition.Explode
 import androidx.transition.Slide
 import androidx.transition.Transition
 import androidx.transition.TransitionInflater
@@ -53,7 +54,12 @@ class ShareImageActivity : AppCompatActivity(), ShareImageFromFragment.Callbacks
 
     private fun initView() {
         this.supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, ShareImageFromFragment.newInstance())
+                .replace(R.id.fragmentContainer, ShareImageFromFragment.newInstance().apply {
+                    exitTransition = Explode().apply {
+                        addTarget(R.id.title)
+                    }
+//                    allowReturnTransitionOverlap = true
+                })
                 .commit()
     }
 

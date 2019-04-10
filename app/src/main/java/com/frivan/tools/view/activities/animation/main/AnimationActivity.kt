@@ -6,7 +6,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.frivan.tools.R
-import com.frivan.tools.view.activities.animation.image.ShareImageActivity
+import com.frivan.tools.view.activities.animation.share.image.ShareImageActivity
 import com.frivan.tools.view.activities.animation.share.list.ContactListActivity
 import com.frivan.tools.view.fragments.animation.explode.ExplodeFragment
 import com.frivan.tools.view.fragments.animation.image.ImageFragment

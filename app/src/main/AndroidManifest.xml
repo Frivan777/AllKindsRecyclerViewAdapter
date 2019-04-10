@@ -9,7 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.activities.animation.image.ShareImageActivity"></activity>
+        <activity
+            android:name=".view.activities.animation.share.image.ImageActivity"
+            android:theme="@style/AppTheme.ImageActivity" />
+        <activity android:name=".view.activities.animation.share.image.ShareImageActivity" />
         <activity
             android:name=".view.activities.animation.share.detail.DetailContactActivity"
             android:theme="@style/AppTheme.DetailContactActivity" />
