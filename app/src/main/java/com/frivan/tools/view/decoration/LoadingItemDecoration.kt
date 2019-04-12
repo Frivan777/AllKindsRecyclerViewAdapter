@@ -18,8 +18,8 @@ class LoadingItemDecoration : RecyclerView.ItemDecoration() {
 
         val position = parent.getChildAdapterPosition(view)
 
-        if (position == parent.adapter?.itemCount?.minus(1)) {
-            outRect.bottom = getDecorationView(parent)?.measuredHeight ?: outRect.bottom
+        if (position == state.itemCount.minus(1)) {
+            outRect.bottom = this.getDecorationView(parent)?.measuredHeight ?: outRect.bottom
         }
     }
 
@@ -30,8 +30,8 @@ class LoadingItemDecoration : RecyclerView.ItemDecoration() {
             val child = parent.getChildAt(i)
             val position = parent.getChildAdapterPosition(child)
 
-            if (position == parent.adapter?.itemCount?.minus(1)) {
-                getDecorationView(parent)?.let { decorationView ->
+            if (position == state.itemCount.minus(1)) {
+                this.getDecorationView(parent)?.let { decorationView ->
                     decorationView.y = child.bottom.toFloat()
                     parent.drawChild(c, decorationView, System.currentTimeMillis())
                     ViewCompat.postInvalidateOnAnimation(parent)
