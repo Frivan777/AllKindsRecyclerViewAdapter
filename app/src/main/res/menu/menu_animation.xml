@@ -22,15 +22,21 @@
         app:showAsAction="never" />
 
     <item
-            android:id="@+id/action_activity_share"
-            android:orderInCategory="100"
-            android:title="Activity Share"
-            app:showAsAction="never" />
+        android:id="@+id/action_activity_share"
+        android:orderInCategory="100"
+        android:title="Activity Share"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_fragment_share"
         android:orderInCategory="100"
         android:title="Fragment Share"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_dynamic"
+        android:orderInCategory="100"
+        android:title="Dynamic"
         app:showAsAction="never" />
 
 </menu>

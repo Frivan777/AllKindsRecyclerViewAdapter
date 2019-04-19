@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <View
+        android:id="@+id/swipeChild"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorPrimaryDark"
+        app:layout_constraintBottom_toBottomOf="@id/swipeParent"
+        app:layout_constraintEnd_toEndOf="@id/swipeParent"
+        app:layout_constraintStart_toStartOf="@id/swipeParent"
+        app:layout_constraintTop_toTopOf="@id/swipeParent" />
+
+    <View
+        android:id="@+id/swipeParent"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:background="@color/gray_800"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</merge>

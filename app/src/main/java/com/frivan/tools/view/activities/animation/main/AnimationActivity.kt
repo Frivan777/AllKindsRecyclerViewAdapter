@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.frivan.tools.R
 import com.frivan.tools.view.activities.animation.share.image.ShareImageActivity
 import com.frivan.tools.view.activities.animation.share.list.ContactListActivity
+import com.frivan.tools.view.fragments.animation.dynamic.DynamicFragment
 import com.frivan.tools.view.fragments.animation.explode.ExplodeFragment
 import com.frivan.tools.view.fragments.animation.image.ImageFragment
 import com.frivan.tools.view.fragments.animation.simple.SimpleFragment
@@ -52,6 +53,11 @@ class AnimationActivity : AppCompatActivity() {
             }
             R.id.action_fragment_share -> {
                 this.startActivity(ShareImageActivity.newIntent(this))
+
+                true
+            }
+            R.id.action_dynamic -> {
+                this.showFragment(DynamicFragment.newInstance())
 
                 true
             }
