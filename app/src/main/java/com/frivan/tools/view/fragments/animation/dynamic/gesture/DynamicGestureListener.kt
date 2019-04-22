@@ -1,12 +1,12 @@
-package com.frivan.tools.view.views.swipe.gesture
+package com.frivan.tools.view.fragments.animation.dynamic.gesture
 
 import android.view.GestureDetector
 import android.view.MotionEvent
 
-private const val SWIPE_DISTANCE_THRESHOLD = 300
-private const val SWIPE_VELOCITY_THRESHOLD = 100
+private const val SWIPE_DISTANCE_THRESHOLD = 0
+private const val SWIPE_VELOCITY_THRESHOLD = 0
 
-class SwipeViewGestureListener(private val swipeCallback: SwipeCallback)
+class DynamicGestureListener(private val swipeCallback: SwipeCallback)
     : GestureDetector.SimpleOnGestureListener() {
 
     //region GestureDetector.SimpleOnGestureListener
@@ -36,7 +36,7 @@ class SwipeViewGestureListener(private val swipeCallback: SwipeCallback)
                 BOTTOM
             } else {
                 TOP
-            }, velocityX)
+            }, velocityY)
 
             return true
         }
@@ -50,13 +50,21 @@ class SwipeViewGestureListener(private val swipeCallback: SwipeCallback)
         return true
     }
 
+    override fun onDoubleTap(e: MotionEvent?): Boolean {
+        this.swipeCallback.onDoubleTap()
+
+        return true
+    }
+
     //endregion GestureDetector.SimpleOnGestureListener
 
     interface SwipeCallback {
 
-        fun onSwipe(@SwipeViewGestureType type: Int, velocityX: Float)
+        fun onSwipe(@DynamicGestureType type: Int, velocity: Float)
 
         fun onScroll(distanceX: Float, distanceY: Float)
+
+        fun onDoubleTap()
 
     }
 

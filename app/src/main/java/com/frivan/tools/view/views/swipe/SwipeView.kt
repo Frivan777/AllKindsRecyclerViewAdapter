@@ -7,11 +7,15 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.dynamicanimation.animation.DynamicAnimation
+import androidx.dynamicanimation.animation.FlingAnimation
 import com.frivan.tools.R
 import com.frivan.tools.view.views.swipe.gesture.SwipeViewGestureListener
 import kotlinx.android.synthetic.main.view_swipe.view.*
 
 private const val TRANSLATION_X_ANIMATION_DURATION = 250L
+
+private const val DEFAULT_FRICTION_FLING_ANIMATION = 0.5F
 
 class SwipeView @JvmOverloads constructor(
         context: Context,
@@ -21,9 +25,25 @@ class SwipeView @JvmOverloads constructor(
 
     private val gestureDetector: GestureDetector
 
+    private val flingAnimation: FlingAnimation by lazy {
+        return@lazy FlingAnimation(this.swipeParent, DynamicAnimation.TRANSLATION_X)
+                .setFriction(DEFAULT_FRICTION_FLING_ANIMATION)
+                .setMinValue(0F - this.swipeParent.width)
+                .setMaxValue(this.swipeParent.width.toFloat())
+    }
+
     init {
         this.gestureDetector = GestureDetector(context, SwipeViewGestureListener(object : SwipeViewGestureListener.SwipeCallback {
-            override fun onSwipe(type: Int, velocityY: Float) {
+            override fun onSwipe(type: Int, velocityX: Float) {
+                if (!this@SwipeView.flingAnimation.isRunning) {
+                    val view = this@SwipeView?.swipeParent
+
+                    if (view == null) return
+
+                    this@SwipeView.flingAnimation
+                            .setStartVelocity(velocityX)
+                            .start()
+                }
 
             }
 
@@ -43,17 +63,24 @@ class SwipeView @JvmOverloads constructor(
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        if (event?.actionMasked == MotionEvent.ACTION_CANCEL
-                || event?.actionMasked == MotionEvent.ACTION_UP) {
+        val result = this.gestureDetector.onTouchEvent(event)
 
-            this.swipeParent?.animate()?.apply {
-                translationX(0F)
-                duration = TRANSLATION_X_ANIMATION_DURATION
-                interpolator = AccelerateDecelerateInterpolator()
-            }
+        if (!this.flingAnimation.isRunning
+                && (event?.actionMasked == MotionEvent.ACTION_CANCEL
+                        || event?.actionMasked == MotionEvent.ACTION_UP)) {
+            this.swipeParent?.animate()?.cancel()
+            this.returnBackTranslationX()
         }
 
-        return this.gestureDetector.onTouchEvent(event)
+        return result
+    }
+
+    private fun returnBackTranslationX() {
+        this.swipeParent?.animate()?.apply {
+            translationX(0F)
+            duration = TRANSLATION_X_ANIMATION_DURATION
+            interpolator = AccelerateDecelerateInterpolator()
+        }
     }
 
 }
