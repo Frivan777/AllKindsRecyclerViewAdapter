@@ -2,7 +2,6 @@ package com.frivan.tools.view.fragments.animation.dynamic
 
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.*
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.FlingAnimation
@@ -19,6 +18,10 @@ class DynamicFragment : Fragment() {
     companion object {
 
         private const val DEFAULT_FRICTION_FLING_ANIMATION = 0.5F
+
+        private const val MIN_VELOCITY_FOR_SCALE = 4000F
+
+        private const val ANIMATION_DROP_SCALE_VALUE = 1.09F
 
         @JvmStatic
         fun newInstance() = DynamicFragment()
@@ -41,6 +44,12 @@ class DynamicFragment : Fragment() {
                         this.springAnimation.setStartVelocity(Math.abs(velocity))
                         this.springAnimation.start()
                     }
+
+                    this.redOval?.let { view ->
+                        if (view.scaleY != 1F) {
+                            view.scaleY = 1F
+                        }
+                    }
                 }
     }
 
@@ -48,34 +57,18 @@ class DynamicFragment : Fragment() {
         return@lazy SpringAnimation(this.redOval, DynamicAnimation.TRANSLATION_Y)
                 .setSpring(SpringForce()
                         .setDampingRatio(SpringForce.DAMPING_RATIO_HIGH_BOUNCY)
-                        .setStiffness(SpringForce.STIFFNESS_VERY_LOW)
+                        .setStiffness(SpringForce.STIFFNESS_LOW)
                         .setFinalPosition(0F))
     }
 
     init {
         this.dynamicGestureDetector = GestureDetector(this.context, DynamicGestureListener(object : DynamicGestureListener.SwipeCallback {
             override fun onSwipe(type: Int, velocity: Float) {
-                if (!this@DynamicFragment.flingAnimation.isRunning
-                        && !this@DynamicFragment.springAnimation.isRunning && type == TOP) {
-                    this@DynamicFragment.flingAnimation
-                            .setStartVelocity(velocity)
-                            .start()
-                }
+                this@DynamicFragment.swipeView(type, velocity)
             }
 
-            override fun onScroll(distanceX: Float, distanceY: Float) {
-                this@DynamicFragment.redOval?.let { view ->
-                    if (Math.abs(distanceX) > Math.abs(distanceY)) {
-                        val maxValuePosition = this@DynamicFragment.displayMetrics?.widthPixels
-                                ?.toFloat()?.minus(view.width) ?: view.x
-                        val oldX = this@DynamicFragment.redOval.x
-
-                        this@DynamicFragment.redOval.x = Math.max(0F,
-                                Math.min(maxValuePosition, view.x - distanceX))
-                        Log.d("DynamicFragment", "oldX=$oldX;newX=${this@DynamicFragment.redOval.x};" +
-                                " maxValuePosition=${maxValuePosition};newValue=${view.x - distanceX}")
-                    }
-                }
+            override fun onScroll(rawX: Float, rawY: Float) {
+                this@DynamicFragment.scrollView(rawX, rawY)
             }
 
             override fun onDoubleTap() {
@@ -109,7 +102,31 @@ class DynamicFragment : Fragment() {
 
     private fun initView() {
         this.redOval.setOnTouchListener { _, event: MotionEvent? ->
-            this.dynamicGestureDetector.onTouchEvent(event)
+            return@setOnTouchListener this.dynamicGestureDetector.onTouchEvent(event)
+        }
+    }
+
+    private fun scrollView(rawX: Float, rawY: Float) {
+        if (rawX == Float.NaN) return
+
+        this.redOval?.let { view ->
+            val maxValuePosition = this.displayMetrics?.widthPixels
+                    ?.toFloat()?.minus(view.width) ?: view.x
+            val result = Math.max(0F, Math.min(maxValuePosition, rawX - view.width.div(2)))
+
+            this.redOval.x = result
+        }
+    }
+
+    private fun swipeView(type: Int, velocity: Float) {
+        if (!this.flingAnimation.isRunning && !this.springAnimation.isRunning && type == TOP) {
+            this.flingAnimation
+                    .setStartVelocity(velocity)
+                    .start()
+
+            if (Math.abs(velocity) >= MIN_VELOCITY_FOR_SCALE) {
+                this.redOval?.scaleY = ANIMATION_DROP_SCALE_VALUE
+            }
         }
     }
 

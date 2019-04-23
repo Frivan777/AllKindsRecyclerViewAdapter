@@ -45,7 +45,7 @@ class DynamicGestureListener(private val swipeCallback: SwipeCallback)
     }
 
     override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-        this.swipeCallback.onScroll(distanceX, distanceY)
+        this.swipeCallback.onScroll(e2?.rawX ?: Float.NaN, e2?.rawY ?: Float.NaN)
 
         return true
     }
@@ -62,7 +62,7 @@ class DynamicGestureListener(private val swipeCallback: SwipeCallback)
 
         fun onSwipe(@DynamicGestureType type: Int, velocity: Float)
 
-        fun onScroll(distanceX: Float, distanceY: Float)
+        fun onScroll(rawX: Float, rawY: Float)
 
         fun onDoubleTap()
 

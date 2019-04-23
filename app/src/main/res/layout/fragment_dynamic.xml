@@ -13,11 +13,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <View
         android:id="@+id/redOval"
         android:layout_width="68dp"
         android:layout_height="68dp"
-        android:src="@drawable/background_red_oval"
+        android:background="@drawable/background_red_oval"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
