@@ -47,7 +47,6 @@ class MainActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         (recyclerView.layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition()?.let {
             outState.putInt(EXTRA_POSITION, it)
-            Log.d(this.javaClass.name, "onSaveInstanceState=$it")
         }
 
         super.onSaveInstanceState(outState)
@@ -106,7 +105,6 @@ class MainActivity : AppCompatActivity() {
                 .setNotifyExecutor(MainThreadExecutor())
                 .also {
                     savedInstanceState?.getInt(EXTRA_POSITION)?.let { position ->
-                        Log.d(this.javaClass.name, "setInitialKey=$position")
                         it.setInitialKey(position)
                     }
                 }

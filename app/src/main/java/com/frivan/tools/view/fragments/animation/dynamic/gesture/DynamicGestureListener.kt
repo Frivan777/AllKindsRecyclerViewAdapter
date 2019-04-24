@@ -1,7 +1,9 @@
 package com.frivan.tools.view.fragments.animation.dynamic.gesture
 
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
+import kotlin.math.abs
 
 private const val SWIPE_DISTANCE_THRESHOLD = 0
 private const val SWIPE_VELOCITY_THRESHOLD = 0
@@ -19,9 +21,9 @@ class DynamicGestureListener(private val swipeCallback: SwipeCallback)
         val distanceX = (e2?.x ?: 0F) - (e1?.x ?: 0F)
         val distanceY = (e2?.y ?: 0F) - (e1?.y ?: 0F)
 
-        if (Math.abs(distanceX) > Math.abs(distanceY)) {
-            if (Math.abs(distanceX) > SWIPE_DISTANCE_THRESHOLD
-                    && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+        if (abs(distanceX) > abs(distanceY)) {
+            if (abs(distanceX) > SWIPE_DISTANCE_THRESHOLD
+                    && abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
                 this.swipeCallback.onSwipe(if (distanceX > 0) {
                     RIGHT
                 } else {
@@ -30,8 +32,8 @@ class DynamicGestureListener(private val swipeCallback: SwipeCallback)
             }
 
             return true
-        } else if (Math.abs(distanceY) > SWIPE_DISTANCE_THRESHOLD
-                && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+        } else if (abs(distanceY) > SWIPE_DISTANCE_THRESHOLD
+                && abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
             this.swipeCallback.onSwipe(if (distanceY > 0) {
                 BOTTOM
             } else {
@@ -45,7 +47,7 @@ class DynamicGestureListener(private val swipeCallback: SwipeCallback)
     }
 
     override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-        this.swipeCallback.onScroll(e2?.rawX ?: Float.NaN, e2?.rawY ?: Float.NaN)
+        this.swipeCallback.onScroll(e2?.x ?: Float.NaN, e2?.y ?: Float.NaN)
 
         return true
     }
@@ -62,7 +64,7 @@ class DynamicGestureListener(private val swipeCallback: SwipeCallback)
 
         fun onSwipe(@DynamicGestureType type: Int, velocity: Float)
 
-        fun onScroll(rawX: Float, rawY: Float)
+        fun onScroll(x: Float, y: Float)
 
         fun onDoubleTap()
 

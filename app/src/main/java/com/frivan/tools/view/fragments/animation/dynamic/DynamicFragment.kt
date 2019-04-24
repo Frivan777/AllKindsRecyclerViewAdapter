@@ -12,6 +12,9 @@ import com.frivan.tools.R
 import com.frivan.tools.view.fragments.animation.dynamic.gesture.DynamicGestureListener
 import com.frivan.tools.view.fragments.animation.dynamic.gesture.TOP
 import kotlinx.android.synthetic.main.fragment_dynamic.*
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 class DynamicFragment : Fragment() {
 
@@ -28,9 +31,11 @@ class DynamicFragment : Fragment() {
 
     }
 
-    private val dynamicGestureDetector: GestureDetector
-
     private var displayMetrics: DisplayMetrics? = null
+
+    //region redOvalView
+
+    private val redOvalViewGestureDetector: GestureDetector
 
     private val flingAnimation: FlingAnimation by lazy {
         val minValue = 0F - this.redOval.y
@@ -41,7 +46,7 @@ class DynamicFragment : Fragment() {
                 .setMaxValue(0F)
                 .addEndListener { _, _, value, velocity ->
                     if (value == minValue) {
-                        this.springAnimation.setStartVelocity(Math.abs(velocity))
+                        this.springAnimation.setStartVelocity(abs(velocity))
                         this.springAnimation.start()
                     }
 
@@ -61,14 +66,59 @@ class DynamicFragment : Fragment() {
                         .setFinalPosition(0F))
     }
 
+    //endregion redOvalView
+
+    //region dragView
+
+    private val dragViewGestureDetector: GestureDetector
+
+    private val childDrag1SpringAnimationX: SpringAnimation by lazy {
+        return@lazy SpringAnimation(this.childDrag1, DynamicAnimation.X)
+                .setSpring(SpringForce()
+                        .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY)
+                        .setStiffness(SpringForce.STIFFNESS_LOW))
+                .addUpdateListener { _, value, _ ->
+                    this.childDrag2SpringAnimationX.animateToFinalPosition(value)
+                }
+    }
+
+    private val childDrag1SpringAnimationY: SpringAnimation by lazy {
+        return@lazy SpringAnimation(this.childDrag1, DynamicAnimation.Y)
+                .setSpring(SpringForce()
+                        .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY)
+                        .setStiffness(SpringForce.STIFFNESS_LOW))
+                .addUpdateListener { _, value, _ ->
+                    this.childDrag2SpringAnimationY.animateToFinalPosition(value.plus(this.childDrag1.height)
+                            .plus(this.resources.getDimension(R.dimen.offset_16)))
+                }
+    }
+
+    private val childDrag2SpringAnimationX: SpringAnimation by lazy {
+        return@lazy SpringAnimation(this.childDrag2, DynamicAnimation.X)
+                .setSpring(SpringForce()
+                        .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY)
+                        .setStiffness(SpringForce.STIFFNESS_LOW))
+    }
+
+    private val childDrag2SpringAnimationY: SpringAnimation by lazy {
+        return@lazy SpringAnimation(this.childDrag2, DynamicAnimation.Y)
+                .setSpring(SpringForce()
+                        .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY)
+                        .setStiffness(SpringForce.STIFFNESS_LOW))
+    }
+
+    //endregion dragView
+
     init {
-        this.dynamicGestureDetector = GestureDetector(this.context, DynamicGestureListener(object : DynamicGestureListener.SwipeCallback {
+        //region redOvalView
+
+        this.redOvalViewGestureDetector = GestureDetector(this.context, DynamicGestureListener(object : DynamicGestureListener.SwipeCallback {
             override fun onSwipe(type: Int, velocity: Float) {
                 this@DynamicFragment.swipeView(type, velocity)
             }
 
-            override fun onScroll(rawX: Float, rawY: Float) {
-                this@DynamicFragment.scrollView(rawX, rawY)
+            override fun onScroll(x: Float, y: Float) {
+                this@DynamicFragment.scrollView(x, y)
             }
 
             override fun onDoubleTap() {
@@ -76,6 +126,27 @@ class DynamicFragment : Fragment() {
             }
 
         }))
+
+        //endregion redOvalView
+
+        //region dragView
+
+        this.dragViewGestureDetector = GestureDetector(this.context, DynamicGestureListener(object : DynamicGestureListener.SwipeCallback {
+            override fun onSwipe(type: Int, velocity: Float) {
+                //Do nothing
+            }
+
+            override fun onScroll(x: Float, y: Float) {
+                this@DynamicFragment.dragView(x, y)
+            }
+
+            override fun onDoubleTap() {
+                //Do nothing
+            }
+
+        }))
+
+        //endregion dragView
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -102,17 +173,23 @@ class DynamicFragment : Fragment() {
 
     private fun initView() {
         this.redOval.setOnTouchListener { _, event: MotionEvent? ->
-            return@setOnTouchListener this.dynamicGestureDetector.onTouchEvent(event)
+            return@setOnTouchListener this.redOvalViewGestureDetector.onTouchEvent(event)
+        }
+
+        this.dragView.setOnTouchListener { _, event: MotionEvent? ->
+            return@setOnTouchListener this.dragViewGestureDetector.onTouchEvent(event)
         }
     }
 
-    private fun scrollView(rawX: Float, rawY: Float) {
-        if (rawX == Float.NaN) return
+    //region redOvalView
+
+    private fun scrollView(x: Float, y: Float) {
+        if (x == Float.NaN) return
 
         this.redOval?.let { view ->
             val maxValuePosition = this.displayMetrics?.widthPixels
                     ?.toFloat()?.minus(view.width) ?: view.x
-            val result = Math.max(0F, Math.min(maxValuePosition, rawX - view.width.div(2)))
+            val result = max(0F, min(maxValuePosition, view.x + x - view.width.div(2)))
 
             this.redOval.x = result
         }
@@ -124,10 +201,40 @@ class DynamicFragment : Fragment() {
                     .setStartVelocity(velocity)
                     .start()
 
-            if (Math.abs(velocity) >= MIN_VELOCITY_FOR_SCALE) {
+            if (abs(velocity) >= MIN_VELOCITY_FOR_SCALE) {
                 this.redOval?.scaleY = ANIMATION_DROP_SCALE_VALUE
             }
         }
+    }
+
+    //endregion redOvalView
+
+    private fun dragView(x: Float, y: Float) {
+        val dragView = this.dragView
+
+        if (dragView == null) return
+
+        val lThis = this@DynamicFragment
+        val newX = x.minus(dragView.width.div(2))
+        val newY = y.minus(dragView.height.div(2))
+        val oldX = dragView.x
+        val oldY = dragView.y
+
+        dragView.apply {
+            this.x = min(lThis.view?.width?.minus(width)?.toFloat() ?: this.x,
+                    max(0F, this.x + newX))
+            this.y = min(lThis.view?.height?.minus(height)?.toFloat() ?: this.y,
+                    max(0F, this.y + newY))
+        }
+
+        this.dragTitle?.apply {
+            this.x -= oldX - dragView.x
+            this.y -= oldY - dragView.y
+        }
+
+        this.childDrag1SpringAnimationX.animateToFinalPosition(dragView.x)
+        this.childDrag1SpringAnimationY.animateToFinalPosition(dragView.y.plus(dragView.height)
+                .plus(this.resources.getDimension(R.dimen.offset_16)))
     }
 
 }

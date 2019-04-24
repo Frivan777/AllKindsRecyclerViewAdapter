@@ -4,4 +4,5 @@
     <dimen name="simple_square_end_size">150dp</dimen>
     <dimen name="start_image_size">150dp</dimen>
     <dimen name="end_image_size">350dp</dimen>
+    <dimen name="offset_16">16dp</dimen>
 </resources>

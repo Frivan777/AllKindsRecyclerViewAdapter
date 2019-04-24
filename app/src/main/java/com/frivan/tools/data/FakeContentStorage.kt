@@ -3,7 +3,7 @@ package com.frivan.tools.data
 import android.os.Handler
 import android.os.Looper
 
-private const val DELAY = 5000L
+private const val DELAY = 250L
 
 private const val LIST_SIZE = 100
 

@@ -12,6 +12,8 @@ import androidx.dynamicanimation.animation.FlingAnimation
 import com.frivan.tools.R
 import com.frivan.tools.view.views.swipe.gesture.SwipeViewGestureListener
 import kotlinx.android.synthetic.main.view_swipe.view.*
+import kotlin.math.max
+import kotlin.math.min
 
 private const val TRANSLATION_X_ANIMATION_DURATION = 250L
 
@@ -52,8 +54,8 @@ class SwipeView @JvmOverloads constructor(
 
                 if (view == null) return
 
-                val x = Math.max(0F - view.width,
-                        Math.min(view.width.toFloat(), view.translationX + (distanceX * -1)))
+                val x = max(0F - view.width,
+                        min(view.width.toFloat(), view.translationX + (distanceX * -1)))
 
                 this@SwipeView?.swipeParent.translationX = x
             }

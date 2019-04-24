@@ -1,6 +1,5 @@
 package com.frivan.tools.view.activities.main.datasourse
 
-import android.util.Log
 import androidx.paging.PositionalDataSource
 import com.frivan.tools.data.FakeContentStorage
 import com.frivan.tools.view.activities.main.adapters.allsorts.ContentData
@@ -40,8 +39,6 @@ class ItemDataSource(private val loadingCallback: (() -> Unit)? = null,
             } else {
                 callback.onResult(list, position)
             }
-
-            Log.d(this.javaClass.name, "loadInitial=${params.requestedStartPosition}")
         }
     }
 }
