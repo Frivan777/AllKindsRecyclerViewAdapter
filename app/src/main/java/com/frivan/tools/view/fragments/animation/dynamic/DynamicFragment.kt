@@ -355,12 +355,4 @@ class DynamicFragment : Fragment() {
 
     //endregion dragView
 
-    //region spinnerView
-
-    private fun swipeSpinner(type: Int, velocity: Float) {
-
-    }
-
-    //endregion spinnerView
-
 }
