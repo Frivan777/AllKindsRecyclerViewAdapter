@@ -13,6 +13,64 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/dampingTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/offset_16"
+        android:layout_marginBottom="@dimen/offset_16"
+        android:text="Damping"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <SeekBar
+        android:id="@+id/dampingSeekBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/offset_16"
+        android:layout_marginEnd="@dimen/offset_16"
+        android:max="10"
+        android:progress="3"
+        app:layout_constraintBottom_toBottomOf="@id/dampingTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/dampingTitle"
+        app:layout_constraintTop_toTopOf="@id/dampingTitle" />
+
+    <TextView
+        android:id="@+id/stiffnessTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/offset_16"
+        android:layout_marginBottom="@dimen/offset_16"
+        android:text="Stiffness"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@id/dampingTitle"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <SeekBar
+        android:id="@+id/stiffnessSeekBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/offset_16"
+        android:layout_marginEnd="@dimen/offset_16"
+        android:max="10"
+        android:progress="3"
+        app:layout_constraintBottom_toBottomOf="@id/stiffnessTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/stiffnessTitle"
+        app:layout_constraintTop_toTopOf="@id/stiffnessTitle" />
+
+    <Switch
+        android:id="@+id/spinnerSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/offset_16"
+        app:layout_constraintBottom_toTopOf="@id/stiffnessTitle"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <View
         android:id="@+id/dragView"
         android:layout_width="50dp"
@@ -61,5 +119,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/spinnerView"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/spinner"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

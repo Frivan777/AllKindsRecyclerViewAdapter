@@ -3,6 +3,7 @@ package com.frivan.tools.view.fragments.animation.dynamic
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.*
+import android.widget.SeekBar
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.FlingAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
@@ -19,6 +20,13 @@ import kotlin.math.min
 class DynamicFragment : Fragment() {
 
     companion object {
+
+        private val DAMPING_RATIO = arrayOf(SpringForce.DAMPING_RATIO_HIGH_BOUNCY,
+                SpringForce.DAMPING_RATIO_LOW_BOUNCY, SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY,
+                SpringForce.DAMPING_RATIO_NO_BOUNCY)
+
+        private val STIFFNESS = arrayOf(SpringForce.STIFFNESS_HIGH, SpringForce.STIFFNESS_LOW,
+                SpringForce.STIFFNESS_MEDIUM, SpringForce.STIFFNESS_VERY_LOW)
 
         private const val DEFAULT_FRICTION_FLING_ANIMATION = 0.5F
 
@@ -109,6 +117,17 @@ class DynamicFragment : Fragment() {
 
     //endregion dragView
 
+    //region SpinnerView
+
+    private val spinnerViewGestureDetector: GestureDetector
+
+    private val spinnerFlingAnimation: FlingAnimation by lazy {
+        return@lazy FlingAnimation(this.spinnerView, DynamicAnimation.ROTATION)
+                .setFriction(DEFAULT_FRICTION_FLING_ANIMATION)
+    }
+
+    //endregion SpinnerView
+
     init {
         //region redOvalView
 
@@ -147,6 +166,26 @@ class DynamicFragment : Fragment() {
         }))
 
         //endregion dragView
+
+        //region SpinnerView
+
+        this.spinnerViewGestureDetector = GestureDetector(this.context, DynamicGestureListener(object : DynamicGestureListener.SwipeCallback {
+            override fun onSwipe(type: Int, velocity: Float) {
+                this@DynamicFragment.spinnerFlingAnimation
+                        .setStartVelocity(velocity)
+                        .start()
+            }
+
+            override fun onScroll(x: Float, y: Float) {
+                //Do nothing
+            }
+
+            override fun onDoubleTap() {
+                //Do nothing
+            }
+        }))
+
+        //endregion SpinnerView
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -179,6 +218,67 @@ class DynamicFragment : Fragment() {
         this.dragView.setOnTouchListener { _, event: MotionEvent? ->
             return@setOnTouchListener this.dragViewGestureDetector.onTouchEvent(event)
         }
+
+        this.spinnerSwitch.setOnCheckedChangeListener { _, isChecked ->
+            this.spinnerView.visibility = if (isChecked) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+        }
+
+        //region dragView
+
+        this.dampingSeekBar.apply {
+            max = DAMPING_RATIO.lastIndex
+            progress = DAMPING_RATIO.indexOf(this@DynamicFragment.childDrag1SpringAnimationX
+                    .spring
+                    .dampingRatio)
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    this@DynamicFragment.changeDamping(progress)
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                    //Do nothing
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    //Do nothing
+                }
+            })
+        }
+
+        this.stiffnessSeekBar.apply {
+            max = STIFFNESS.lastIndex
+            progress = STIFFNESS.indexOf(this@DynamicFragment.childDrag1SpringAnimationX
+                    .spring
+                    .stiffness)
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    this@DynamicFragment.changeStiffness(progress)
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                    //Do nothing
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    //Do nothing
+                }
+            })
+        }
+
+        //endregion dragView
+
+        //region spinnerView
+
+        this.spinnerView.setOnTouchListener { _, event ->
+            this.spinnerViewGestureDetector.onTouchEvent(event)
+        }
+
+        //endregion spinnerView
+
     }
 
     //region redOvalView
@@ -209,6 +309,8 @@ class DynamicFragment : Fragment() {
 
     //endregion redOvalView
 
+    //region dragView
+
     private fun dragView(x: Float, y: Float) {
         val dragView = this.dragView
 
@@ -236,5 +338,29 @@ class DynamicFragment : Fragment() {
         this.childDrag1SpringAnimationY.animateToFinalPosition(dragView.y.plus(dragView.height)
                 .plus(this.resources.getDimension(R.dimen.offset_16)))
     }
+
+    private fun changeDamping(position: Int) {
+        this.childDrag1SpringAnimationX.spring.dampingRatio = DAMPING_RATIO[position]
+        this.childDrag1SpringAnimationY.spring.dampingRatio = DAMPING_RATIO[position]
+        this.childDrag2SpringAnimationX.spring.dampingRatio = DAMPING_RATIO[position]
+        this.childDrag2SpringAnimationY.spring.dampingRatio = DAMPING_RATIO[position]
+    }
+
+    private fun changeStiffness(position: Int) {
+        this.childDrag1SpringAnimationX.spring.stiffness = STIFFNESS[position]
+        this.childDrag1SpringAnimationY.spring.stiffness = STIFFNESS[position]
+        this.childDrag2SpringAnimationX.spring.stiffness = STIFFNESS[position]
+        this.childDrag2SpringAnimationY.spring.stiffness = STIFFNESS[position]
+    }
+
+    //endregion dragView
+
+    //region spinnerView
+
+    private fun swipeSpinner(type: Int, velocity: Float) {
+
+    }
+
+    //endregion spinnerView
 
 }
